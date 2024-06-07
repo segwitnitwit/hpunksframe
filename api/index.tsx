@@ -4,13 +4,11 @@ import { devtools } from "frog/dev";
 import { serveStatic } from "frog/serve-static";
 
 const contracts = [
-  { address: "0x5d2DE0ff02AAA0cce55Af669DF4b38c7dd437Dce", name: "floor" },
-  { address: "0x6FF7D9938E70F61e4B1B9b5D36a9cAc906129C66", name: "hoodie" },
-  { address: "0xFc4086744F5c72CeCd8139915ED3e68c54fA3b21", name: "zombie" },
-  { address: "0x442036ba5BD6364dE7813bC8480B299FcBeDf452", name: "ape" },
-  { address: "0xB11b81143F5D6a7Ebecf664967281cf348636f6e", name: "alien" },
-  { address: "0xf88C2F983e1a4C9A01671965d458799bbbe04352", name: "eyes" },
-  { address: "0xd61EA851119eb8312f8fA3455a3f41277f7A748C", name: "hat" },
+  { address: "0x3f6A1B1A0518C74f6E4AC1dF405d53bCa847c336", name: "floor" },
+  { address: "0xe2b2BD6f6600c39E596fEFE2d6315F3897956b0d", name: "hoodie" },
+  { address: "0x12c90d041035E49b052f0A13b9f655a1cA07dbeA", name: "zombie" },
+  { address: "0xEd09AbFD8096B64A1695a12f3737FbB66214e76a", name: "ape" },
+  { address: "0xFB0564B26c45fb8aBb768F27ea3724EffE827207", name: "red" }
 ];
 
 export const app = new Frog({
@@ -23,9 +21,7 @@ app.frame("/sale/:id/:type/:block", async (c) => {
   const block = c.req.param("block");
   const id = c.req.param("id");
   const type = c.req.param("type");
-  // const imgHash = c.req.param('imgHash');
-  // const imgUrl = "https://lh3.googleusercontent.com/"+imgHash;
-  // console.log("IMG URL: " + imgUrl)
+
   const contract = contracts.find((contract) => {
     return contract.name === type;
   });
@@ -35,7 +31,7 @@ app.frame("/sale/:id/:type/:block", async (c) => {
     console.log("BLOCK: " + block);
     try {
       const response = await fetch(
-        `https://explorer.degen.tips/api/v2/addresses/${contract.address}/transactions`
+        `https://ham.calderaexplorer.xyz/api/v2/addresses/${contract.address}/transactions`
       );
       const data = await response.json();
       // console.log("DATA: " + JSON.stringify(data));
@@ -45,7 +41,7 @@ app.frame("/sale/:id/:type/:block", async (c) => {
       console.log("info: " + JSON.stringify(info));
 
       const tokenTransferResponse = await fetch(
-        `https://explorer.degen.tips/api/v2/transactions/${info.hash}/token-transfers`
+        `https://ham.calderaexplorer.xyz/api/v2/transactions/${info.hash}/token-transfers`
       );
       const tokenTransferData = await tokenTransferResponse.json();
       return {
@@ -62,16 +58,14 @@ app.frame("/sale/:id/:type/:block", async (c) => {
   console.log("TRANSFER INFO: " + JSON.stringify(transferInfo));
 
   const imgUrl = `https://hampunks.apexdeployer.xyz/metadata/${id}.png`
-  const targetUrl = `https://dpunks.apexdeployer.xyz/${type}`;
-  const sellerUrl = `https://dpunks.vercel.app/address/${transferInfo.from}`;
-  const buyerUrl = `https://dpunks.vercel.app/address/${transferInfo.to}`;
+  const targetUrl = `https://hampunks.apexdeployer.xyz/${type}`;
+  // const sellerUrl = `https://dpunks.vercel.app/address/${transferInfo.from}`;
+  // const buyerUrl = `https://dpunks.vercel.app/address/${transferInfo.to}`;
   const typeString = type === "eyes" ? type : type + "s";
 
   return c.res({
     image: imgUrl,
     intents: [
-      <Button.Link href={sellerUrl}>seller</Button.Link>,
-      <Button.Link href={buyerUrl}>buyer</Button.Link>,
       <Button.Link href={targetUrl}>{typeString}</Button.Link>
     ],
   });
